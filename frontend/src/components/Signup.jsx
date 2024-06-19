@@ -33,7 +33,7 @@ function Signup({ onLoginClick }) {
             .then(res => {
                 console.log("Register Success!!");
                 setErrors({}); // Menghapus pesan kesalahan jika berhasil
-                window.location.href = '/login';
+                onLoginClick();
             })
             .catch(err => {
                 if (err.response && err.response.data.error) {
