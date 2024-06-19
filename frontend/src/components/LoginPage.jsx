@@ -10,7 +10,7 @@ function Login({ onSignupClick, onLogin }) {
     e.preventDefault();
 
     // Kirim permintaan login ke server
-    axios.post('http://localhost:8081/login', { email, password })
+    axios.post('https://compquiz-backend.vercel.app/login', { email, password })
       .then(res => {
         const { username } = res.data; // Ambil username dari respons server
         onLogin(username); // Panggil fungsi onLogin dengan username
