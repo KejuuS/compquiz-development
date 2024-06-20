@@ -14,6 +14,7 @@ function Login({ onSignupClick, onLogin }) {
       .then(res => {
         const { username } = res.data; // Ambil username dari respons server
         onLogin(username); // Panggil fungsi onLogin dengan username
+        alert("Login Success!");
       })
       .catch(error => {
         console.error('Login failed:', error);

@@ -31,7 +31,8 @@ function Signup({ onLoginClick }) {
         // Mengirim data ke server jika semua kolom telah diisi
         axios.post('https://compquiz-backend.vercel.app/register', values)
             .then(res => {
-                console.log("Register Success!!");
+                console.log("Register Success!!!");
+                alert("Register Success!");
                 setErrors({}); // Menghapus pesan kesalahan jika berhasil
                 onLoginClick();
             })
