@@ -19,6 +19,7 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState('login');
   const [username, setUsername] = useState('');
   const [shuffledQuestions, setShuffledQuestions] = useState([]);
+  const [shuffledOptions, setShuffledOptions] = useState([]);
 
   useEffect(() => {
     // Check if user is logged in on initial load
@@ -43,7 +44,6 @@ const App = () => {
     setUsername(username);
   };
 
-  // Reset state when logging out
   const handleLogout = () => {
     setIsLoggedIn(false);
     setCurrentPage('login');
@@ -66,21 +66,25 @@ const App = () => {
     if (questions.length === 0) {
       await reloadQuestions();
     }
-    setShuffledQuestions(shuffleArray([...questions])); // Shuffle questions once
+    const shuffledQuestions = shuffleArray([...questions]);
+    setShuffledQuestions(shuffledQuestions); // Shuffle questions once
     setCurrentQuestion(0);
     setScore(0);
     setShowInfoBox(true);
     setQuizStarted(true);
+    setShuffledOptions(shuffleArray([...shuffledQuestions[0].options])); // Shuffle options for the first question
   };
 
   // Reset question and score when restarting quiz
   const handleRestartQuiz = async () => {
     await reloadQuestions();
-    setShuffledQuestions(shuffleArray([...questions])); // Shuffle questions once
+    const shuffledQuestions = shuffleArray([...questions]);
+    setShuffledQuestions(shuffledQuestions); // Shuffle questions once
     setCurrentQuestion(0);
     setScore(0);
     setQuizStarted(true);
     setShowResultBox(false);
+    setShuffledOptions(shuffleArray([...shuffledQuestions[0].options])); // Shuffle options for the first question
   };
 
   const handleContinue = () => {
@@ -103,6 +107,7 @@ const App = () => {
     const nextQuestion = currentQuestion + 1;
     if (nextQuestion < shuffledQuestions.length) {
       setCurrentQuestion(nextQuestion);
+      setShuffledOptions(shuffleArray([...shuffledQuestions[nextQuestion].options])); // Shuffle options for the next question
     } else {
       setShowResultBox(true);
     }
@@ -138,7 +143,7 @@ const App = () => {
               {quizStarted && !showInfoBox && !showResultBox && (
                 <QuizBox
                   question={shuffledQuestions[currentQuestion].question}
-                  options={shuffleArray([...shuffledQuestions[currentQuestion].options])}
+                  options={shuffledOptions} // Use shuffled options from state
                   answer={shuffledQuestions[currentQuestion].answer}
                   timer={15}
                   currentQuestionNumber={currentQuestion + 1}
