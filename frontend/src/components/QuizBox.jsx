@@ -37,6 +37,7 @@ const QuizBox = ({ question, options, answer, timer, currentQuestionNumber, tota
   };
 
   const handleTimeOut = () => {
+    alert('Times up!');  // Alert when time is up
     setSelectedOption(null);
     setIsAnswered(true);
   };
@@ -44,11 +45,11 @@ const QuizBox = ({ question, options, answer, timer, currentQuestionNumber, tota
   const renderOption = (option, index) => {
     let className = "option bg-white hover:bg-green-500 border border-green-500 rounded-lg py-2 px-4 mb-3 cursor-pointer";
     let icon = null;
-  
+
     if (isAnswered) {
       if (option === answer) {
         className = "option correct bg-green-500 border-green-500 text-white rounded-lg py-2 px-4 mb-3";
-        // icon = <span className="ml-2">✔️<Emoji emoji="check-mark-button"/></span>;
+        // icon = <span className="ml-2">✔️</span>;
       } else if (option === selectedOption) {
         className = "option incorrect bg-red-500 border-red-500 text-white rounded-lg py-2 px-4 mb-3";
         // icon = <span className="ml-2">❌</span>;
@@ -56,7 +57,7 @@ const QuizBox = ({ question, options, answer, timer, currentQuestionNumber, tota
         className = "option bg-white border border-green-500 rounded-lg py-2 px-4 mb-3 cursor-not-allowed";
       }
     }
-  
+
     return (
       <div
         key={index}
@@ -67,10 +68,9 @@ const QuizBox = ({ question, options, answer, timer, currentQuestionNumber, tota
       </div>
     );
   };
-  
 
   return (
-    <div className="flex justify-center items-center bg-primary min-h-screen"> 
+    <div className="flex justify-center items-center bg-primary min-h-screen">
       <div className="flex-initial quiz_box bg-white p-6 rounded-lg shadow-lg w-260 h-128 overflow-y-auto">
         <header className="flex justify-between items-center mb-4">
           <div className="title text-xl font-semibold">CompQuiz</div>
