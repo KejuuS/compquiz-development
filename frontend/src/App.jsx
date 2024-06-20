@@ -18,6 +18,7 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentPage, setCurrentPage] = useState('login');
   const [username, setUsername] = useState('');
+  const [shuffledQuestions, setShuffledQuestions] = useState([]);
 
   useEffect(() => {
     // Check if user is logged in on initial load
@@ -42,21 +43,44 @@ const App = () => {
     setUsername(username);
   };
 
+  // Reset state when logging out
   const handleLogout = () => {
     setIsLoggedIn(false);
     setCurrentPage('login');
     setUsername('');
+    setQuizStarted(false);
+    setCurrentQuestion(0);
+    setScore(0);
+    setShowInfoBox(false);
+    setShowResultBox(false);
     localStorage.removeItem('token');
   };
 
+  // Shuffle array function
+  const shuffleArray = (array) => {
+    return array.sort(() => Math.random() - 0.5);
+  };
+
+  // Reset question and score when starting quiz
   const handleStartQuiz = async () => {
     if (questions.length === 0) {
       await reloadQuestions();
     }
+    setShuffledQuestions(shuffleArray([...questions])); // Shuffle questions once
     setCurrentQuestion(0);
     setScore(0);
     setShowInfoBox(true);
     setQuizStarted(true);
+  };
+
+  // Reset question and score when restarting quiz
+  const handleRestartQuiz = async () => {
+    await reloadQuestions();
+    setShuffledQuestions(shuffleArray([...questions])); // Shuffle questions once
+    setCurrentQuestion(0);
+    setScore(0);
+    setQuizStarted(true);
+    setShowResultBox(false);
   };
 
   const handleContinue = () => {
@@ -69,7 +93,7 @@ const App = () => {
   };
 
   const handleOptionSelect = (selectedOption) => {
-    const currentQuestionObj = questions[currentQuestion];
+    const currentQuestionObj = shuffledQuestions[currentQuestion];
     if (selectedOption === currentQuestionObj.answer) {
       setScore(score + 1);
     }
@@ -77,19 +101,11 @@ const App = () => {
 
   const handleNextQuestion = () => {
     const nextQuestion = currentQuestion + 1;
-    if (nextQuestion < questions.length) {
+    if (nextQuestion < shuffledQuestions.length) {
       setCurrentQuestion(nextQuestion);
     } else {
       setShowResultBox(true);
     }
-  };
-
-  const handleRestartQuiz = async () => {
-    await reloadQuestions();
-    setCurrentQuestion(0);
-    setScore(0);
-    setQuizStarted(true);
-    setShowResultBox(false);
   };
 
   const handleQuitQuiz = () => {
@@ -121,21 +137,21 @@ const App = () => {
               )}
               {quizStarted && !showInfoBox && !showResultBox && (
                 <QuizBox
-                  question={questions[currentQuestion].question}
-                  options={questions[currentQuestion].options}
-                  answer={questions[currentQuestion].answer}
+                  question={shuffledQuestions[currentQuestion].question}
+                  options={shuffleArray([...shuffledQuestions[currentQuestion].options])}
+                  answer={shuffledQuestions[currentQuestion].answer}
                   timer={15}
                   currentQuestionNumber={currentQuestion + 1}
-                  totalQuestions={questions.length}
+                  totalQuestions={shuffledQuestions.length}
                   onOptionSelect={handleOptionSelect}
                   onNext={handleNextQuestion}
-                  isLastQuestion={currentQuestion === questions.length - 1}
+                  isLastQuestion={currentQuestion === shuffledQuestions.length - 1}
                 />
               )}
               {showResultBox && (
                 <ResultBox
                   score={score}
-                  totalQuestions={questions.length}
+                  totalQuestions={shuffledQuestions.length}
                   onRestart={handleRestartQuiz}
                   onQuit={handleQuitQuiz}
                 />
